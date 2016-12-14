@@ -286,7 +286,7 @@ function canvasApp(){
 		
 		$(document).ready(function () {
 			$.ajax({
-				url: 'https://52.214.146.26:8080',
+				url: 'https://52.214.146.26:443',
 				type: 'GET',
 				contentType:'application/json',
 				data: JSON.stringify(data),
