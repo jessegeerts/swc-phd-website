@@ -44,7 +44,10 @@ function canvasApp(){
 
 	
 	// define the ball or brain variable:
-	var ball = {radius:30, x:c.width/6, y:c.height/2, color:"rgba(255,0,0, 0.5)", angle:0, speed:0, vx:0, vy:0, elasticity:0.5};
+	var brain = new Image();
+	brain.scr = "brainplayer.png";
+	var ballColor = "rgba(200,0,0,0)";
+	var ball = {radius:30, x:c.width/6, y:c.height/2, color:ballColor, angle:0, speed:0, vx:0, vy:0, elasticity:0.5};
 
 	var gameOn = false;
 	var firstTry = true;
@@ -70,18 +73,18 @@ function canvasApp(){
 	var nObstacles = 6;
 	var minObstacleDistance = 200;
 	var minGapSize = 5*ball.radius;
+	var obstacleColor = "rgba(0,0,200,0.9)";
 	
 	for (var i = 0; i < nObstacles; i++){
 		var xoff = Math.random()*100;
 		var xvalue = c.width/2 + 400 *i + Math.random()*100;
 		var ob1height = Math.random()*400;
 		var gapsz = minGapSize + Math.random()*400;
-		obstaclesA[i] = {x:xvalue + xoff, y: 0, width: 100, height: ob1height, color:"rgba(0,200,0,0.5)"};
+		obstaclesA[i] = {x:xvalue + xoff, y: 0, width: 100, height: ob1height, color:obstacleColor};
 		var ob2height = c.height - ob1height - gapsz;
-		obstaclesB[i] = {x:xvalue + xoff, y: c.height-ob2height, width: 100, height:ob2height, color:"rgba(0,200,0,0.5)"};		
+		obstaclesB[i] = {x:xvalue + xoff, y: c.height-ob2height, width: 100, height:ob2height, color:obstacleColor};		
 	}
 		
-
 	// initialise point count:
 	var points = 0;
 	
@@ -91,8 +94,18 @@ function canvasApp(){
 		ctx.clearRect(0,0, c.width, c.height);
 
 		ctx.font = "30px Arial";
+		ctx.textAlign = "center";
 		ctx.fillStyle = "Black";
-		ctx.fillText("Welcome to the most exciting game ever. Click to start.",c.width/5,c.height/2);
+		ctx.fillText("Welcome to Flappy Brain!",c.width/2,c.height/3);
+		ctx.font = "20px Arial";
+		//ctx.textAlign = "left";
+		ctx.fillText("Your goal is to find a way out of this maze. You can dodge the ",c.width/2,c.height/2);
+		ctx.fillText("incoming obstacles by pressing the left mouse button.   ",c.width/2,c.height/2+30);
+		ctx.textAlign = "center";
+
+		ctx.fillText("Press left mouse button to start.",c.width/2,c.height/2+100);
+
+		ctx.closePath();
 
 	}
 	
@@ -123,13 +136,16 @@ function canvasApp(){
 			checkCollision(ball,obstaclesB[i]);
 		}
 		
-		// draw ball:
+		//draw ball:
 		ctx.fillStyle = ball.color;
 		ctx.beginPath();
 		ctx.arc(ball.x,ball.y,ball.radius,0,Math.PI*2,true);
 		ctx.closePath();
 		ctx.fill();
 
+		var img = document.getElementById("brainplayer");
+		ctx.drawImage(img,ball.x-ball.radius,ball.y-ball.radius,ball.radius*2,ball.radius*2);
+		
 		// draw obstacles
 		for (var i = 0; i<nObstacles; i++){
 			drawObstacle(obstaclesA[i]);
@@ -215,16 +231,16 @@ function canvasApp(){
 		obstaclesB = {};
 		ball = {};
 		
-		ball = {radius:30, x:c.width/6, y:c.height/2, color:"rgba(255,0,0, 0.5)", angle:0, speed:0, vx:0, vy:0, elasticity:0.7};
+		ball = {radius:30, x:c.width/6, y:c.height/2, color:ballColor, angle:0, speed:0, vx:0, vy:0, elasticity:0.7};
 		
 		for (var i = 0; i < nObstacles; i++){
 			var xoff = Math.random()*100;
 			var xvalue = c.width/2 + 400 *i + Math.random()*100;
 			var ob1height = Math.random()*400;
 			var gapsz = minGapSize + Math.random()*400;
-			obstaclesA[i] = {x:xvalue + xoff, y: 0, width: 100, height: ob1height, color:"rgba(0,200,0,0.5)"};
+			obstaclesA[i] = {x:xvalue + xoff, y: 0, width: 100, height: ob1height, color:obstacleColor};
 			var ob2height = c.height - ob1height - gapsz;
-			obstaclesB[i] = {x:xvalue + xoff, y: c.height-ob2height, width: 100, height:ob2height, color:"rgba(0,200,0,0.5)"};		
+			obstaclesB[i] = {x:xvalue + xoff, y: c.height-ob2height, width: 100, height:ob2height, color:obstacleColor};		
 		}
 		
 		points = 0;
@@ -260,15 +276,27 @@ function canvasApp(){
 		data.push('inverseGrav= ' + inverseGravitymode)
 		
 		console.log(data);
+		
+		gameOverMessage();		
+		
 		resetGlobalVariables();
-		ctx.font = "30px Arial";
-		ctx.fillStyle = "Black";
-		ctx.fillText("Game over! Click to retry.",c.width/4,c.height/2);
-
 		c.addEventListener("mousedown", restartGame);
 		gameCounter += 1;
 		if (gameCounter % 10 == 0){ blockCounter += 1;}
 		return gameCounter
+	}
+	
+	function gameOverMessage(){
+		ctx.fillStyle = "rgba(255,255,255, 0)";
+		ctx.fillRect(0,0, c.width, c.height);
+
+		ctx.font = "30px Arial";
+		ctx.fillStyle = "Red";
+		ctx.textAlign = "center";
+		ctx.fillText("Game over " + userName+ "!",c.width/2,c.height/2);
+		ctx.fillText("Your score was " + points,c.width/2,c.height/2+50);
+		ctx.fillStyle = "Black";
+		ctx.fillText("Click here to restart",c.width/2,c.height/2+100);
 	}
 	
 		// random obstacle generator functions:

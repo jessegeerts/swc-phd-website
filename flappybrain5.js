@@ -119,7 +119,10 @@ function canvasApp(){
 		
 		checkBoundary(ball);
 		for (var i = 0; i<nObstacles; i++){
-			checkCollision(ball,obstaclesA[i]);
+			if (checkCollision(ball,obstaclesA[i])){
+				!gameon;
+				!firstTry;
+			}
 			checkCollision(ball,obstaclesB[i]);
 		}
 		
@@ -163,7 +166,6 @@ function canvasApp(){
 	}
 	
 	function checkCollision(ball,obstacle){
-		var collided = false;
 		var distX = Math.abs(ball.x - obstacle.x - obstacle.width/2);
 		var distY = Math.abs(ball.y - obstacle.y - obstacle.height/2);
 		
@@ -171,27 +173,21 @@ function canvasApp(){
 		if (distY > (obstacle.height/2 + ball.radius)) { return false; }
 
 		if (distX <= (obstacle.width/2)) { 
-			//onPause();
-			//gameOver();
-			collided = true;
+			onPause();
+			return true;
 		} 
 		if (distY <= (obstacle.height/2)) { 
-			//onPause(); 
-			//gameOver();
-			collided = true;
+			onPause(); 
+			return true
 		}
 		
 		var dx=distX-obstacle.width/2;
 		var dy=distY-obstacle.height/2;
 		if (dx*dx+dy*dy<=(ball.radius*ball.radius)) {
-			//onPause()
-			//gameOver();
-			collided = true;
-		}
-		if (collided){
-			onPause();
-			gameOver();
-		}
+			onPause()
+			return true
+		};
+
 	}
 		
 	function startGame(){
@@ -241,6 +237,10 @@ function canvasApp(){
 			window.setTimeout(gameLoop,20);
 			c.addEventListener("mousedown", startGame);
 			drawStartScreen()
+		}else if(!gameOn && !firstTry){
+			window.setTimeout(gameLoop,20);
+			gameOver()
+			c.addEventListener("mousedown", startGame);
 		}
 	}
 
@@ -249,10 +249,8 @@ function canvasApp(){
 		gameLoop();
 	}
 
-	function gameOver(){
-		//added:
-		c.removeEventListener("mousedown",jump)
-		
+	function writeData(){
+	
 		data.push('user= ' + userName)
 		data.push('gameNo= ' + gameCounter)
 		data.push('blockNo= ' + blockCounter)
@@ -260,6 +258,13 @@ function canvasApp(){
 		data.push('inverseGrav= ' + inverseGravitymode)
 		
 		console.log(data);
+	}
+	
+	function gameOver(){
+		//added:
+		c.removeEventListener("mousedown",jump)
+		
+
 		resetGlobalVariables();
 		ctx.font = "30px Arial";
 		ctx.fillStyle = "Black";
