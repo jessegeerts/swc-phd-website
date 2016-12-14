@@ -18,7 +18,7 @@ function downloadData(){
 
 	downloadButton.click();
 }
-*/
+
 
 ("#downloadbutton").click(function() {
   //var content = content of file;
@@ -27,7 +27,7 @@ function downloadData(){
   dl.setAttribute('download', 'filename.txt');
   dl.click();
 });
-
+*/
 function startGame(){
 	//document.location.reload();
 	canvasApp();
@@ -309,6 +309,21 @@ function canvasApp(){
 		
 				
 		resetGlobalVariables();
+		var buttonPressed = false
+		
+		//downloadButton = document.getElementById("downloadButton")
+		//downloadButton.addEventListener("click", downloadData());
+		
+		//function downloadData(){ buttonPressed =true;}
+		//if(buttonPressed ==true ){
+		if(gameCounter!=0 && gameCounter % 10 ==0){
+			var hiddenElement = document.createElement('a');
+
+			hiddenElement.href = 'data:attachment/text,' + encodeURI(allData);
+			hiddenElement.target = '_blank';
+			hiddenElement.download = 'myFile.txt';
+			hiddenElement.click();
+		}
 		
 		gameOverMessage(pointsGathered,usr);		
 
