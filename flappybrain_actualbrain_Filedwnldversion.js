@@ -1,12 +1,32 @@
 //window.addEventListener("load",onWindowLoad,false);
 
 var data = [];
-//var jsonString = JSON.stringify(data);
-
-//document.getElementById("userNameButton").addEventListener("click", getUserName);
+var allData= [];
 
 startBut = document.getElementById("startButton")
 startBut.addEventListener("click", startGame);
+/*
+downloadButton = document.getElementById("downloadButton")
+//downloadButton.addEventListener("click", downloadData(allData));
+downloadButton.href = 'data:attachment/text,' + encodeURI(allData);
+downloadButton.target = '_blank';
+downloadButton.download = 'myFile.txt';
+
+
+function downloadData(){
+	//var hiddenElement = document.createElement('a');
+
+	downloadButton.click();
+}
+*/
+
+("#downloadbutton").click(function() {
+  //var content = content of file;
+  var dl = document.createElement('a');
+  dl.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(allData));
+  dl.setAttribute('download', 'filename.txt');
+  dl.click();
+});
 
 function startGame(){
 	//document.location.reload();
@@ -18,6 +38,7 @@ function startGame(){
 function ReLo(){
 	document.location.reload();
 }
+
 
 function canvasApp(){
 	
@@ -280,37 +301,12 @@ function canvasApp(){
 		data.push('score= ' + points)
 		data.push('inverseGrav= ' + inverseGravitymode)
 		
+		allData.push(JSON.stringify(data))
+		
 		var pointsGathered = points;
 		var usr = userName;
-		console.log(data);
+		console.log(allData);
 		
-		$(document).ready(function () {
-			$.ajax({
-				url: 'http://52.214.146.26:8080',
-				type: 'GET',
-				contentType:'application/json',
-				data: JSON.stringify(data),
-				dataType:'json',
-				success: function(data){
-				//On ajax success do this
-				alert(data);
-				console.log('sent to server');
-			},
-			error: function(xhr, ajaxOptions, thrownError) {
-			//On error do this
-			if (xhr.status == 200) {
-
-				alert(ajaxOptions);
-				console.log('error')
-			}
-			else {
-			/*alert(xhr.status);
-			alert(thrownError);
-			console.log(xhr.status);
-			*/}}
-			})
-		});
-
 				
 		resetGlobalVariables();
 		
@@ -321,6 +317,7 @@ function canvasApp(){
 		if (gameCounter % 10 == 0){ blockCounter += 1;}
 		return gameCounter
 	}
+	
 	
 	
 	
@@ -375,6 +372,7 @@ function canvasApp(){
 	function switchMode(){
 		if(inverseGravitymode==true){inverseGravitymode=false}else if(inverseGravitymode==false){inverseGravitymode=true}
 	}
+	
 	
 	
 }
