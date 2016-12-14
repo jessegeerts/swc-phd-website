@@ -5,24 +5,23 @@ var data = [];
 
 //document.getElementById("userNameButton").addEventListener("click", getUserName);
 
-document.getElementById("startButton").addEventListener("click", startGame);
+startBut = document.getElementById("startButton")
+startBut.addEventListener("click", startGame);
 
 function startGame(){
+	//document.location.reload();
 	canvasApp();
+	startBut.removeEventListener("click", startGame);
+	startBut.addEventListener("click", ReLo);
 }
 
-//function getUserName() { 
-//	var nameElement = document.getElementById("userNameInput")
-//	var userName = nameElement.value;
-//    //document.getElementById("someDiv").innerHTML += userName;
-//	return userName
-//	console.log(userName);
-//}
-
-//
+function ReLo(){
+	document.location.reload();
+}
 
 function canvasApp(){
 	
+	//document.getElementById("startButton").removeEventListener("click", startGame);
 	// get username
 	var nameElement = document.getElementById("userNameInput")
 	var userName = nameElement.value;
@@ -37,6 +36,12 @@ function canvasApp(){
 	
 	// gravity settings
 	var inverseGravitymode = false;
+	// initial setting of the variable:
+	var initGravMode = coinFlip();
+	function coinFlip(){
+		var coin = Math.random();
+		if(coin>=0.5){return true}else if(coin<0.5){return false};
+	}
 	
 	var gravity = 0.8;
 	
@@ -110,8 +115,7 @@ function canvasApp(){
 	}
 	
 	function drawScreen(){
-		
-		if (blockCounter % 2 ==0){inverseGravitymode= false} else if (blockCounter % 2 != 0) {inverseGravitymode = true}
+		if (blockCounter % 2 ==0){inverseGravitymode = initGravMode} else if (blockCounter % 2 != 0) {inverseGravitymode = !initGravMode}
 		
 		if (inverseGravitymode){
 			gravity = -0.8;
@@ -119,6 +123,7 @@ function canvasApp(){
 		if (!inverseGravitymode){
 			gravity = 0.8
 		}
+		
 		// draw white background:
 		ctx.fillStyle = "rgba(255,255,255, 1)";
 		ctx.fillRect(0,0, c.width, c.height);
@@ -275,21 +280,54 @@ function canvasApp(){
 		data.push('score= ' + points)
 		data.push('inverseGrav= ' + inverseGravitymode)
 		
+		var pointsGathered = points;
+		var usr = userName;
 		console.log(data);
 		
-		gameOverMessage();		
-		
+		$(document).ready(function () {
+			$.ajax({
+				url: 'http://52.214.146.26:8080',
+				type: 'GET',
+				contentType:'application/json',
+				data: JSON.stringify(data),
+				dataType:'json',
+				success: function(data){
+				//On ajax success do this
+				alert(data);
+				console.log('sent to server');
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+			//On error do this
+			if (xhr.status == 200) {
+
+				alert(ajaxOptions);
+				console.log('error')
+			}
+			else {
+			/*alert(xhr.status);
+			alert(thrownError);
+			console.log(xhr.status);
+			*/}}
+			})
+		});
+
+				
 		resetGlobalVariables();
+		
+		gameOverMessage(pointsGathered,usr);		
+
 		c.addEventListener("mousedown", restartGame);
 		gameCounter += 1;
 		if (gameCounter % 10 == 0){ blockCounter += 1;}
 		return gameCounter
 	}
 	
-	function gameOverMessage(){
-		ctx.fillStyle = "rgba(255,255,255, 0)";
-		ctx.fillRect(0,0, c.width, c.height);
-
+	
+	
+	function gameOverMessage(points,userName){
+		ctx.fillStyle = "rgba(255,255,255, 0.5)";
+		ctx.fillRect(0,0, c.width/2, c.height/2);
+		//ctx.clearRect(c.width/2,c.width/2, c.width/2,c.height/2);
 		ctx.font = "30px Arial";
 		ctx.fillStyle = "Red";
 		ctx.textAlign = "center";
@@ -334,8 +372,9 @@ function canvasApp(){
 		}
 	}
 	
-	
-	
+	function switchMode(){
+		if(inverseGravitymode==true){inverseGravitymode=false}else if(inverseGravitymode==false){inverseGravitymode=true}
+	}
 	
 	
 }
