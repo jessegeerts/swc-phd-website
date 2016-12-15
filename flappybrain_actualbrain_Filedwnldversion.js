@@ -145,9 +145,16 @@ function canvasApp(){
 			gravity = 0.8
 		}
 		
+		
 		// draw white background:
 		ctx.fillStyle = "rgba(255,255,255, 1)";
 		ctx.fillRect(0,0, c.width, c.height);
+		
+		ctx.font = "25px Arial";
+		ctx.fillStyle = "Black";
+		ctx.textAlign = "left";
+		ctx.fillText("Score: " + points ,10,30);
+
 		
 		// update ball BUG COULD BE HERE
 		ball.vy += gravity;
@@ -301,10 +308,11 @@ function canvasApp(){
 		data.push('score= ' + points)
 		data.push('inverseGrav= ' + inverseGravitymode)
 		
-		allData.push(JSON.stringify(data))
-		
+		//allData.push(JSON.stringify(data))
+		allData.push(data)
 		var pointsGathered = points;
 		var usr = userName;
+		var gamesPlayed = gameCounter;
 		console.log(allData);
 		
 				
@@ -316,7 +324,7 @@ function canvasApp(){
 		
 		//function downloadData(){ buttonPressed =true;}
 		//if(buttonPressed ==true ){
-		if(gameCounter!=0 && gameCounter % 10 ==0){
+		if(gameCounter!=0 && (gameCounter+1) % 20 ==0){
 			var hiddenElement = document.createElement('a');
 
 			hiddenElement.href = 'data:attachment/text,' + encodeURI(allData);
@@ -325,7 +333,7 @@ function canvasApp(){
 			hiddenElement.click();
 		}
 		
-		gameOverMessage(pointsGathered,usr);		
+		gameOverMessage(pointsGathered,usr,gamesPlayed);		
 
 		c.addEventListener("mousedown", restartGame);
 		gameCounter += 1;
@@ -336,7 +344,7 @@ function canvasApp(){
 	
 	
 	
-	function gameOverMessage(points,userName){
+	function gameOverMessage(points,userName,nGames){
 		ctx.fillStyle = "rgba(255,255,255, 0.5)";
 		ctx.fillRect(0,0, c.width/2, c.height/2);
 		//ctx.clearRect(c.width/2,c.width/2, c.width/2,c.height/2);
@@ -344,7 +352,9 @@ function canvasApp(){
 		ctx.fillStyle = "Red";
 		ctx.textAlign = "center";
 		ctx.fillText("Game over " + userName+ "!",c.width/2,c.height/2);
-		ctx.fillText("Your score was " + points,c.width/2,c.height/2+50);
+		var gamesplayed = nGames+1;
+		if (nGames==0){ctx.fillText("Your score was " + points + " and you've played " + gamesplayed + " game" ,c.width/2,c.height/2+50);}
+		else if(nGames!=0){ctx.fillText("Your score was " + points + " and you've played " + gamesplayed + " games" ,c.width/2,c.height/2+50)}
 		ctx.fillStyle = "Black";
 		ctx.fillText("Click here to restart",c.width/2,c.height/2+100);
 	}
