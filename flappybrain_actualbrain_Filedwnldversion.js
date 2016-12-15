@@ -99,7 +99,7 @@ function canvasApp(){
 	var nObstacles = 6;
 	var minObstacleDistance = 200;
 	var minGapSize = 5*ball.radius;
-	var obstacleColor = "rgba(0,0,200,0.9)";
+	var obstacleColor = "rgba(7,80,146,0.9)";
 	
 	for (var i = 0; i < nObstacles; i++){
 		var xoff = Math.random()*100;
@@ -130,7 +130,11 @@ function canvasApp(){
 		ctx.textAlign = "center";
 
 		ctx.fillText("Press left mouse button to start.",c.width/2,c.height/2+100);
-
+		
+		var swcLogo = document.getElementById("swcLogo");
+		swcLogo.display="block";
+		swcLogo.margin = 0;
+		ctx.drawImage(swcLogo,c.width/2,c.width/2,512,88);
 		ctx.closePath();
 
 	}
